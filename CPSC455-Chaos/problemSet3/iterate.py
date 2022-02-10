@@ -49,7 +49,7 @@ def iterate_expression(expression, value, precision, max_iterations=100000):
 
     while abs(last_iterating_value - iterating_value) > 10**(-1*precision) and count < max_iterations:
         last_iterating_value = iterating_value
-        iterating_value = expression.subs(x, iterating_value)
+        iterating_value = round(expression.subs(x, iterating_value), 14)
         if iterating_value < 1e200 and iterating_value > -1e200:
             iterate_list.append(iterating_value)
         else:
@@ -124,6 +124,18 @@ def iterate_over_range(expression, max):
 
 
 def plot_graph_helper(graph_list, title, xlabel, ylabel, window_name, is_logarithm=False, has_grid = False, success=True):
+    """takes a list and plots it out. takes arguments that are used in displaying the graph
+
+    Args:
+        graph_list (list): list of numbers used as the y values in the graph
+        title (string): [description]
+        xlabel (string): [description]
+        ylabel (string): [description]
+        window_name (string): [description]
+        is_logarithm (bool, optional): whether to use the log scale on the y graph. Defaults to False.
+        has_grid (bool, optional): displays red grid lines. Defaults to False.
+        success (bool, optional): [description]. Defaults to True.
+    """
     font1 = {'family': 'serif', 'color': 'blue', 'size': 20}
     font2 = {'family': 'serif', 'color': 'darkred', 'size': 15}
     fig, ax = plt.subplots(num=window_name)
@@ -137,7 +149,7 @@ def plot_graph_helper(graph_list, title, xlabel, ylabel, window_name, is_logarit
     plt.xlabel(xlabel, fontdict=font2)
     plt.ylabel(ylabel, fontdict=font2)
     if has_grid:
-        ax.grid(color='r', linestyle='-', linewidth=1)
+        ax.grid(color='r', linestyle='-', linewidth=.5)
 
     if success:
         ax.text(.3, .7,

@@ -16,46 +16,48 @@ k, m, n = symbols('k m n', integer=True)
 f, g, h = symbols('f g h', cls=Function)
 
 
-def main():
-    INITIAL_VALUE = 0.2
-    PRECISION = 8
+def graph_cobweb(expression, initial_value, max_iterations, low_range, high_range):
+    font1 = {'family': 'serif', 'color': 'blue', 'size': 20}
+    font2 = {'family': 'serif', 'color': 'darkred', 'size': 15}
+    graph_list = iterate_expression(
+        expression, initial_value, 8, max_iterations)
+    t = np.linspace(low_range, high_range, 100)
+    values = list(map(lambda j: expression.subs(x, j), t))
+    fig, ax = plt.subplots(num=f'Cobweb plot of F(x) = {expression}, x0 = {initial_value}')
+    plt.title(f'F(x) = {expression}, x0 = {initial_value}', fontdict=font2)
+    plt.xlabel('x', fontdict=font2)
+    plt.ylabel('y', fontdict=font2)
+    ax.plot(t, values)
+    ax.plot(t, t)
+    ax.plot([initial_value, initial_value], [
+            initial_value, graph_list[1]], color='r')
+    ax.plot([initial_value, graph_list[1]], [
+            graph_list[1], graph_list[1]], color='r')
+    for loop_controller in range(1, len(graph_list) - 1):
+        ax.plot([graph_list[loop_controller], graph_list[loop_controller]], [
+                graph_list[loop_controller], graph_list[loop_controller + 1]], color='r')
+        ax.plot([graph_list[loop_controller], graph_list[loop_controller + 1]],
+                [graph_list[loop_controller + 1], graph_list[loop_controller + 1]], color='r')
 
-    expression_a = sympify((x**2) + .25)
-    expression_b = atan(x)
-    expression_c = Piecewise( (2*x, x<=1/2), (2 - 2*x, x>1/2) )
-    expression_d = sympify((-1/2 * x**3) - (3/2 * x**2) + 1)
-    expression_e = Piecewise( (2*x, (x<1/2) & (x>=0)), (2*x - 1, (x<1) & (x>=1/2)) )
+
+def main():
+    expression_a = Piecewise( (2*x, (x<1/2) & (x>=0)), (2*x - 1, (x<1) & (x>=1/2)) , (x, True))
+    expression_b = sympify((x**3)/6 + x)
+    expression_c = 2.8*x*(1-x)
+    expression_d = atan(x)
+
+    graph_cobweb(expression_a, .1, 20, 0, 1)
+    graph_cobweb(expression_a, .111, 50, 0, 1)
     
-    # plot_iterate_graph(8, expression_b, .3, max_iterations=1000)
-    # plot_iterate_graph(8, expression_c, .2, max_iterations=10)
-    graph_list_e = plot_iterate_graph(8, expression_e, D(.6), max_iterations=1000, has_grid=True)
-    pp.pp(graph_list_e)
+    graph_cobweb(expression_b, .11, 247, -1, 1)
+    graph_cobweb(expression_b, -1, 3, -3, 1)
+    
+    graph_cobweb(expression_c, .1, 20, 0, .65)
+    graph_cobweb(expression_c, .9, 20, 0, 1)
+    
+    graph_cobweb(expression_d, 1, 50, -1, 1)
+    graph_cobweb(expression_d, 2, 50, -1, 2)
     plt.show(block=True)
-    
-    # -1.00000000000000
-    # 0.732050807568877
-    # -2.73205080756888
-    
-    # t = np.linspace(-4, 2, 100)
-    # values = (-1/2 * t**3) - (3/2 * t**2) + 1
-    # fig, ax = plt.subplots()
-    # ax.plot(t, values)
-    # ax.grid()
-    
-    # plt.text(.3, -.25,
-    #              f'Blue values converge to 0\nRed values converge to 2\nGreen values converge to -2', transform=ax.transAxes)
-    
-    # for item in np.linspace(-4, 2, 101):
-    #     graph_list = find_basin_of_attraction(expression_d, item, 10)
-        
-    #     if graph_list[-1] < -2:
-    #         ax.scatter(item, 0, color='tab:red')
-    #     elif graph_list[-1] > 0:
-    #         ax.scatter(item, 0, color='tab:green')
-    #     else:
-    #         ax.scatter(item, 0, color='tab:blue')
-        
-    # plt.show(block=True)
 
 
 if __name__ == '__main__':
