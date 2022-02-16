@@ -75,7 +75,7 @@ def main():
     expr4 = sympify((x**2) + y)
     expr_a = sympify(y*x*(1-x))
     plot_bifurcation_graph(expr_a, print_progressbar=True,
-                           samples=1000, max_iterations=1000, minimum_c=-2, maximum_c=4, initial_value=.1)
+                           samples=1000, max_iterations=1000, minimum_c=-1.5, maximum_c=-.5, initial_value=.1)
 
     manager = plt.get_current_fig_manager()
     # manager.full_screen_toggle()
@@ -85,4 +85,5 @@ def main():
 
 
 if __name__ == '__main__':
+    multiprocessing.freeze_support()
     main()
